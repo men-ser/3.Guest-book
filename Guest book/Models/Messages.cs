@@ -5,7 +5,7 @@ namespace Guest_book.Models
     public class Messages
     {
         [Key]
-        public int MessageId { get; set; }
+        public int Id { get; set; }
         
         public string Message { get; set; }
 
@@ -13,7 +13,7 @@ namespace Guest_book.Models
 
         public int? UserId { get; set; }
         
-        public User? Login { get; set; }
+        public User? Name { get; set; }
 
     }
 }
