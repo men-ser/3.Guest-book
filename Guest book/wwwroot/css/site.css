@@ -27,3 +27,7 @@ body {
     background-color: coral;
     border: 5px groove red;
 }
+
+textarea {
+    width: 800px
+}

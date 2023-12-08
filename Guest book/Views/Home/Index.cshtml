@@ -1,5 +1,4 @@
-﻿@model IEnumerable<Guest_book.Models.Messages>
-@models Guest_book.Models.Messages
+﻿@model Guest_book.Models.MessagesModel
 @{
     ViewData["Title"] = "Home Page";
    
@@ -7,13 +6,13 @@
 
 <div class="text-center">
     <h1 class="display-4">Гостевая книга</h1>
-<div class="guest">
-        <dl class="row">
+    <div class="guest ">
+        <dl class="row justify-content-between">
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Login)
+                @Html.DisplayNameFor(model => model.Name.Login)
             </dt>
             <dt class="col-sm-5">
-                @Html.DisplayNameFor(model => model.Message)
+                @Html.DisplayNameFor(model => model.Messages)
             </dt>
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.MessageDate)
@@ -21,27 +20,59 @@
         </dl>
         @if (Model != null)
         {
-            @foreach (var item in Model)
+            @foreach (var item in Model.Messages)
             {
-              <div class="col">  <tr>
-                    <td class="col-sm-2">
-                        @Html.DisplayFor(modelItem => item.Login.Login)
-                    </td>
-                    <td class="col-sm-5">
-                        @Html.DisplayFor(modelItem => item.Message)
-                    </td>
-                    <td class="col-sm-2">
-                        @Html.DisplayFor(modelItem => item.MessageDate)
-                    </td>
-                </tr>
-                </div>
+                <table class="justify-content-between col">
+                    <tr>
+                        <td class="col-sm-2">
+                            @Html.DisplayFor(modelItem => item.Name.Login)
+                        </td>
+                        <td class="col-sm-5">
+                            @Html.DisplayFor(modelItem => item.Message)
+                        </td>
+                        <td class="col-sm-2">
+                            @Html.DisplayFor(modelItem => item.MessageDate)
+                        </td>
+                    </tr>
+                </table>
             }
 
         }
+  </div>
 
-        
+    @if (Context.Session.GetString("login") != null)
+    {
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        
+                        <textarea asp-for="Message" class="form-control"></textarea>
+                        <span asp-validation-for="Message" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        @{
+                            var time = DateTime.UtcNow;
+                        }
+                        <input type=hidden asp-for="MessageDate" class="form-control" value=@time />
+                        <span asp-validation-for="MessageDate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        @{
+                            var login = Context.Session.GetString("login");
+                        }
+                        <input type=hidden asp-for="Name.Login" class="form-control" value=@login/>
+                        <input type=hidden asp-for="UserId" class="form-control" value=0/>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
     </div>
-    <a class="navbar-brand" asp-area="" asp-controller="Messages" asp-action="Create">Create</a>
+    }
+
 </div>
 
 

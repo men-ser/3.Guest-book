@@ -34,15 +34,6 @@
         </main>
     </div>
  
-    @if (Context.Session.GetString("login") != null)
-    {
-        <div> <hr /> </div>
-        @RenderSectionAsync("Home/Create.cshtml")
-      
-    }
-   
-
-
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2023 - Guest_book.
