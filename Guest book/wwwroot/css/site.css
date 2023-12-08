@@ -22,12 +22,29 @@ body {
 }
 
 .guest {
-    width: 800px;
+    width: 1000px;
     min-height: 60%;
-    background-color: coral;
+    background-color:antiquewhite;
     border: 5px groove red;
 }
 
 textarea {
-    width: 800px
+    width: 800px;
+    padding: 0;
+    border: 1px solid #f9a849;
+    box-shadow: rgba(0,0,0,0.5) 3px 3px 5px, rgba(0,0,0,0.5) -1px -1px 5px;
+   }
+
+.mybtn {padding: 1px 3px; 
+     font-size: 1em;
+    margin:2px 5px;
+    width:200px;
+    height: 1.6em;
 }
+table td:nth-child(1), td:nth-child(3) {
+    width: 200px;
+}
+table td:nth-child(2) {
+    width: 470px;
+}
+.m-t-10 {margin-top:10px;}

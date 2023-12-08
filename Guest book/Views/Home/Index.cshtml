@@ -6,18 +6,20 @@
 
 <div class="text-center">
     <h1 class="display-4">Гостевая книга</h1>
-    <div class="guest ">
-        <dl class="row justify-content-between">
-            <dt class="col-sm-2">
+    <div class="guest col-md-10">
+        <table class="row justify-content-between">
+            <tr>
+                <td class="col-sm-2 fs-4 fw-bold">
                 @Html.DisplayNameFor(model => model.Name.Login)
-            </dt>
-            <dt class="col-sm-5">
+            </td>
+                <td class="col-sm-5 fs-4 fw-bold">
                 @Html.DisplayNameFor(model => model.Messages)
-            </dt>
-            <dt class="col-sm-2">
+            </td>
+                <td class="col-sm-2 fs-4 fw-bold">
                 @Html.DisplayNameFor(model => model.MessageDate)
-            </dt>
-        </dl>
+            </td>
+        </tr>
+        </table>
         @if (Model != null)
         {
             @foreach (var item in Model.Messages)
@@ -27,7 +29,7 @@
                         <td class="col-sm-2">
                             @Html.DisplayFor(modelItem => item.Name.Login)
                         </td>
-                        <td class="col-sm-5">
+                        <td class="col-sm-5 text-start">
                             @Html.DisplayFor(modelItem => item.Message)
                         </td>
                         <td class="col-sm-2">
@@ -43,11 +45,11 @@
     @if (Context.Session.GetString("login") != null)
     {
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-10">
                 <form asp-action="Create">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        
+                        <label asp-for="Message" class="control-label m-t-10"></label>
                         <textarea asp-for="Message" class="form-control"></textarea>
                         <span asp-validation-for="Message" class="text-danger"></span>
                     </div>
@@ -66,7 +68,7 @@
                         <input type=hidden asp-for="UserId" class="form-control" value=0/>
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-primary" />
+                        <input type="submit" value="Добавить сообщение" class="btn btn-primary mybtn" />
                 </div>
             </form>
         </div>

@@ -16,7 +16,6 @@ namespace Guest_book.Controllers
             _context = context;
         }
 
-
         // GET: AccountController
         public ActionResult Login()
         {
