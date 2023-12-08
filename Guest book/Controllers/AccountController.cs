@@ -114,5 +114,11 @@ namespace Guest_book.Controllers
 
             return View(reg);
         }
+
+        public ActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+        }
     }
 }
