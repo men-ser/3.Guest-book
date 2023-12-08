@@ -1,14 +1,48 @@
-﻿@{
+﻿@model IEnumerable<Guest_book.Models.Messages>
+@models Guest_book.Models.Messages
+@{
     ViewData["Title"] = "Home Page";
+   
 }
 
 <div class="text-center">
     <h1 class="display-4">Гостевая книга</h1>
 <div class="guest">
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Login)
+            </dt>
+            <dt class="col-sm-5">
+                @Html.DisplayNameFor(model => model.Message)
+            </dt>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.MessageDate)
+            </dt>
+        </dl>
+        @if (Model != null)
+        {
+            @foreach (var item in Model)
+            {
+              <div class="col">  <tr>
+                    <td class="col-sm-2">
+                        @Html.DisplayFor(modelItem => item.Login.Login)
+                    </td>
+                    <td class="col-sm-5">
+                        @Html.DisplayFor(modelItem => item.Message)
+                    </td>
+                    <td class="col-sm-2">
+                        @Html.DisplayFor(modelItem => item.MessageDate)
+                    </td>
+                </tr>
+                </div>
+            }
 
+        }
 
+        
+    </div>
+    <a class="navbar-brand" asp-area="" asp-controller="Messages" asp-action="Create">Create</a>
 </div>
 
 
 
-</div>

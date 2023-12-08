@@ -1,86 +1,118 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Guest_book.Models;
 using System.Security.Cryptography;
 using System.Text;
-using Guest_book.Models;
 
 namespace Guest_book.Controllers
 {
     public class AccountController : Controller
     {
+
+        private readonly GuestBookContext _context;
+
+        public AccountController(GuestBookContext context)
+        {
+            _context = context;
+        }
+
+
         // GET: AccountController
-        public ActionResult Index()
+        public ActionResult Login()
         {
             return View();
         }
 
-        // GET: AccountController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: AccountController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: AccountController/Create
+        // GET: AccountController/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public IActionResult Login(UserModel logon)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                if (_context.Users.ToList().Count == 0)
+                {
+                    ModelState.AddModelError("", "Wrong login or password!");
+                    return View(logon);
+                }
+                var users = _context.Users.Where(a => a.Login == logon.Login);
+                if (users.ToList().Count == 0)
+                {
+                    ModelState.AddModelError("", "Wrong login or password!");
+                    return View(logon);
+                }
+                var user = users.First();
+                //string? salt = user.Salt;
+
+                //переводим пароль в байт-массив  
+                byte[] password = Encoding.Unicode.GetBytes( logon.Password); //salt +
+
+                //создаем объект для получения средств шифрования  
+                var md5 = MD5.Create();
+
+                //вычисляем хеш-представление в байтах  
+                byte[] byteHash = md5.ComputeHash(password);
+
+                StringBuilder hash = new StringBuilder(byteHash.Length);
+                for (int i = 0; i < byteHash.Length; i++)
+                    hash.Append(string.Format("{0:X2}", byteHash[i]));
+
+                if (user.Password != hash.ToString())
+                {
+                    ModelState.AddModelError("", "Wrong login or password!");
+                    return View(logon);
+                }
+                HttpContext.Session.SetString("login", user.Login);
+                return RedirectToAction("Index", "Home");
             }
-            catch
-            {
-                return View();
-            }
+            return View(logon);
         }
 
-        // GET: AccountController/Edit/5
-        public ActionResult Edit(int id)
+        public IActionResult Registration()
         {
             return View();
         }
 
-        // POST: AccountController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public IActionResult Registration(RegistrationModel reg)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+                User user = new User();
+                user.Login = reg.Login;
 
-        // GET: AccountController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+                //byte[] saltbuf = new byte[16];
 
-        // POST: AccountController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
+                //RandomNumberGenerator randomNumberGenerator = RandomNumberGenerator.Create();
+                //randomNumberGenerator.GetBytes(saltbuf);
+
+                //StringBuilder sb = new StringBuilder(16);
+                //for (int i = 0; i < 16; i++)
+                //    sb.Append(string.Format("{0:X2}", saltbuf[i]));
+                //string salt = sb.ToString();
+
+                //переводим пароль в байт-массив  
+                byte[] password = Encoding.Unicode.GetBytes( reg.Password); //salt +
+
+                //создаем объект для получения средств шифрования  
+                var md5 = MD5.Create();
+
+                //вычисляем хеш-представление в байтах  
+                byte[] byteHash = md5.ComputeHash(password);
+
+                StringBuilder hash = new StringBuilder(byteHash.Length);
+                for (int i = 0; i < byteHash.Length; i++)
+                    hash.Append(string.Format("{0:X2}", byteHash[i]));
+
+                user.Password = hash.ToString();
+                //user.Salt = salt;
+                _context.Users.Add(user);
+                _context.SaveChanges();
+                return RedirectToAction("Login");
             }
-            catch
-            {
-                return View();
-            }
+
+            return View(reg);
         }
     }
 }
