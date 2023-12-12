@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace Guest_book.Controllers
 {
@@ -45,27 +46,36 @@ namespace Guest_book.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(MessagesModel item)
         {
-            Messages message = new Messages();
-            message.MessageDate = item.MessageDate;
-            message.Message = item.Message;
 
-            if (_context.Users.ToList().Count != 0)
-            {
-                foreach (var user in _context.Users)
-                {
-                    if (item.Name.Login == user.Login)
-                        message.UserId = user.UserId;
-                }
-            }           
-           
-            if (ModelState.IsValid)
-            {
-                _context.Add(message);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+            if (item.Message.Length >0 && item.Message.Length <3)
+            { ModelState.AddModelError("Message", "Вы ввели короткий отзыв -  допустимо минимум 3 символа");
             }
-            //ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserId", messages.UserId);
+
+            if (item.Message.Length >= 2)
+            {
+                Messages message = new Messages();
+                message.MessageDate = item.MessageDate;
+                message.Message = item.Message;
+
+                if (_context.Users.ToList().Count != 0)
+                {
+                    foreach (var user in _context.Users)
+                    {
+                        if (item.Name.Login == user.Login)
+                            message.UserId = user.UserId;
+                    }
+                }
+
+                if (ModelState.IsValid)
+                {
+                    _context.Add(message);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
             return RedirectToAction("Index", "Home");
+
         }
 
         

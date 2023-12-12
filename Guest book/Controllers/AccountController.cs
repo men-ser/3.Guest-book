@@ -76,11 +76,24 @@ namespace Guest_book.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Registration(RegistrationModel reg)
         {
+            if (_context.Users.ToList().Count != 0)
+                {
+                    foreach (var user in _context.Users)
+                    {
+                    if (reg.Login == user.Login)
+                    {
+                        ModelState.AddModelError("", "Такой логин уже используется!");
+                    }
+                    }
+            }
+
             if (ModelState.IsValid)
             {
+                
                 User user = new User();
                 user.Login = reg.Login;
 
+                #region salt 
                 //byte[] saltbuf = new byte[16];
 
                 //RandomNumberGenerator randomNumberGenerator = RandomNumberGenerator.Create();
@@ -90,14 +103,10 @@ namespace Guest_book.Controllers
                 //for (int i = 0; i < 16; i++)
                 //    sb.Append(string.Format("{0:X2}", saltbuf[i]));
                 //string salt = sb.ToString();
+                #endregion
 
-                //переводим пароль в байт-массив  
                 byte[] password = Encoding.Unicode.GetBytes( reg.Password); //salt +
-
-                //создаем объект для получения средств шифрования  
                 var md5 = MD5.Create();
-
-                //вычисляем хеш-представление в байтах  
                 byte[] byteHash = md5.ComputeHash(password);
 
                 StringBuilder hash = new StringBuilder(byteHash.Length);
