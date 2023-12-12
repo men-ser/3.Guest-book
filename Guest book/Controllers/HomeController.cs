@@ -48,10 +48,11 @@ namespace Guest_book.Controllers
         {
 
             if (item.Message.Length >0 && item.Message.Length <3)
-            { ModelState.AddModelError("Message", "Вы ввели короткий отзыв -  допустимо минимум 3 символа");
+            { 
+                ModelState.AddModelError("Message", "Вы ввели короткий отзыв -  допустимо минимум 3 символа");
             }
 
-            if (item.Message.Length >= 2)
+            if (item.Message.Length > 2)
             {
                 Messages message = new Messages();
                 message.MessageDate = item.MessageDate;
